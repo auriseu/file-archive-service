@@ -20,13 +20,12 @@ import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBo
 
 @RestController
 @RequestMapping("/files")
-public class FileConversionController {
+public class FileArchiveController {
 
-    @PostMapping(value = {"/convert", "/convert/{type}", "/convert/{type}/{fileName}"})
-    public ResponseEntity<StreamingResponseBody> convertFile(HttpServletResponse response,
-                                                             @RequestParam("files") MultipartFile[] files,
-                                                             @PathVariable("type") Optional<String> type,
-                                                             @PathVariable(value = "fileName") Optional<String> fileName) {
+    @PostMapping(value = {"/archive", "/archive/{type}"})
+    public ResponseEntity<StreamingResponseBody> archiveFiles(HttpServletResponse response,
+                                                              @RequestParam("files") MultipartFile[] files,
+                                                              @PathVariable("type") Optional<String> type) {
 
         final ArchiveMethod archiveMethod = ArchiveMethod.fromExtension(type.orElse("zip"));
         StreamingResponseBody streamResponseBody = out -> {
@@ -44,7 +43,7 @@ public class FileConversionController {
             }
         };
 
-        String name = fileName.orElse("download") + "." + archiveMethod.getExtension();
+        String name = "archive" + "." + archiveMethod.getExtension();
         response.setContentType("application/zip");
         response.setHeader("Content-Disposition", "filename=" + name);
 

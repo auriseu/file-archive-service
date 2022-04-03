@@ -8,14 +8,17 @@
 		<version>2.6.6</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
+
 	<groupId>com.aurimas</groupId>
 	<artifactId>demo</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>file-upload-service</name>
-	<description>File upload service demo</description>
+	<name>file-archive-service</name>
+	<description>File archive service demo</description>
+
 	<properties>
 		<java.version>11</java.version>
 	</properties>
+
 	<dependencies>
 		<!--<dependency>
 			<groupId>org.springframework.boot</groupId>

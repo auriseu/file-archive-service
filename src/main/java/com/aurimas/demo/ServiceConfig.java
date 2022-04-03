@@ -6,7 +6,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ComponentScan({"com.aurimas.demo.controllers"})
-@EnableAutoConfiguration(exclude={DataSourceAutoConfiguration.class})
+@ComponentScan({"com.aurimas.demo.controllers", "com.aurimas.demo.services"})
+@EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class})
 public class ServiceConfig {
 }
