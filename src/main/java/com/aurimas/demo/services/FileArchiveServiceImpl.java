@@ -1,36 +1,38 @@
 package com.aurimas.demo.services;
 
 import java.io.OutputStream;
-import java.time.LocalDateTime;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
+import java.util.List;
 
-import com.aurimas.demo.util.ArchiveMethod;
-import org.apache.commons.lang3.StringUtils;
+import com.aurimas.demo.services.archivers.FileArchiver;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StreamUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 @Service
 public class FileArchiveServiceImpl implements FileArchiveService {
+    private final List<FileArchiver> archivers;
+
+    public FileArchiveServiceImpl(List<FileArchiver> archivers) {
+        this.archivers = archivers;
+    }
 
     @Override
-    public StreamingResponseBody archiveFiles(MultipartFile[] files, ArchiveMethod archiveMethod, OutputStream outputStream) {
+    public StreamingResponseBody archiveFiles(MultipartFile[] files, String archiveMethod, OutputStream outputStream) {
+        final FileArchiver archiver = archivers.stream()
+                .filter(a -> a.canArchive(archiveMethod))
+                .findFirst()
+                .orElseThrow(() -> new UnsupportedOperationException("Unsupported archive method: " + archiveMethod));
 
-        return out -> {
-            try (ZipOutputStream zipOutputStream = new ZipOutputStream(outputStream)) {
+        return archiver.archive(files, outputStream);
+    }
 
-                for (MultipartFile file : files) {
-                    ZipEntry zipEntry = new ZipEntry(StringUtils.defaultIfBlank(file.getOriginalFilename(), "file_" + LocalDateTime.now()));
-                    zipOutputStream.putNextEntry(zipEntry);
+    @Override
+    public String getExtension(String method) {
+        final FileArchiver fileArchiver = archivers.stream()
+                .filter(a -> a.canArchive(method))
+                .findFirst()
+                .orElseThrow(() -> new UnsupportedOperationException("Unsupported archive method: " + method));
 
-                    StreamUtils.copy(file.getInputStream(), zipOutputStream);
-                    zipOutputStream.closeEntry();
-                }
-
-                zipOutputStream.finish();
-            }
-        };
+        return fileArchiver.getExtension(method);
     }
 }

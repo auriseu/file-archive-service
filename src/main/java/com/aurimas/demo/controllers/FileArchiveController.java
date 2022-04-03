@@ -3,11 +3,9 @@ package com.aurimas.demo.controllers;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Optional;
-import java.util.zip.ZipOutputStream;
 
 import com.aurimas.demo.services.FileArchiveService;
-import com.aurimas.demo.util.ArchiveMethod;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.aurimas.demo.services.archivers.ZipArchiver;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,10 +30,10 @@ public class FileArchiveController {
                                                               @RequestParam("files") MultipartFile[] files,
                                                               @PathVariable("type") Optional<String> type) throws IOException {
 
-        final ArchiveMethod archiveMethod = ArchiveMethod.fromExtension(type.orElse("zip"));
+        final String archiveMethod = type.orElse(ZipArchiver.METHOD_ZIP);
         final StreamingResponseBody responseBody = fileArchiveService.archiveFiles(files, archiveMethod, response.getOutputStream());
 
-        String name = "archive" + "." + archiveMethod.getExtension();
+        String name = "archive" + "." + fileArchiveService.getExtension(archiveMethod);
         response.setContentType("application/zip");
         response.setHeader("Content-Disposition", "filename=" + name);
 

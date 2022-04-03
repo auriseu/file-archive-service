@@ -8,5 +8,5 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ComponentScan({"com.aurimas.demo.controllers", "com.aurimas.demo.services"})
 @EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class})
-public class ServiceConfig {
+public class FileArchiveServiceConfig {
 }
