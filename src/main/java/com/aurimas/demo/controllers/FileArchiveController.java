@@ -1,15 +1,14 @@
 package com.aurimas.demo.controllers;
 
 import javax.servlet.http.HttpServletResponse;
-import java.time.LocalDateTime;
+import java.io.IOException;
 import java.util.Optional;
-import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import com.aurimas.demo.services.FileArchiveService;
 import com.aurimas.demo.util.ArchiveMethod;
-import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,31 +21,24 @@ import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBo
 @RequestMapping("/files")
 public class FileArchiveController {
 
+    private final FileArchiveService fileArchiveService;
+
+    public FileArchiveController(FileArchiveService fileArchiveService) {
+        this.fileArchiveService = fileArchiveService;
+    }
+
     @PostMapping(value = {"/archive", "/archive/{type}"})
     public ResponseEntity<StreamingResponseBody> archiveFiles(HttpServletResponse response,
                                                               @RequestParam("files") MultipartFile[] files,
-                                                              @PathVariable("type") Optional<String> type) {
+                                                              @PathVariable("type") Optional<String> type) throws IOException {
 
         final ArchiveMethod archiveMethod = ArchiveMethod.fromExtension(type.orElse("zip"));
-        StreamingResponseBody streamResponseBody = out -> {
-            try (ZipOutputStream zipOutputStream = new ZipOutputStream(response.getOutputStream())) {
-
-                for (MultipartFile file : files) {
-                    ZipEntry zipEntry = new ZipEntry(StringUtils.defaultIfBlank(file.getOriginalFilename(), "file_" + LocalDateTime.now()));
-                    zipOutputStream.putNextEntry(zipEntry);
-
-                    StreamUtils.copy(file.getInputStream(), zipOutputStream);
-                    zipOutputStream.closeEntry();
-                }
-
-                zipOutputStream.finish();
-            }
-        };
+        final StreamingResponseBody responseBody = fileArchiveService.archiveFiles(files, archiveMethod, response.getOutputStream());
 
         String name = "archive" + "." + archiveMethod.getExtension();
         response.setContentType("application/zip");
         response.setHeader("Content-Disposition", "filename=" + name);
 
-        return ResponseEntity.ok(streamResponseBody);
+        return ResponseEntity.ok(responseBody);
     }
 }
