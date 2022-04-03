@@ -1,9 +1,9 @@
-package com.aurimas.demo.services;
+package com.aurimas.demo.archiving.service;
 
 import java.io.OutputStream;
 import java.util.List;
 
-import com.aurimas.demo.services.archivers.FileArchiver;
+import com.aurimas.demo.archiving.service.archivers.FileArchiver;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;

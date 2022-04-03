@@ -1,11 +1,13 @@
-package com.aurimas.demo.controllers;
+package com.aurimas.demo.archiving.controller;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Optional;
 
-import com.aurimas.demo.services.FileArchiveService;
-import com.aurimas.demo.services.archivers.ZipArchiver;
+import com.aurimas.demo.archiving.service.FileArchiveService;
+import com.aurimas.demo.archiving.service.archivers.ZipArchiver;
+import com.aurimas.demo.statistics.service.StatisticsService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,13 +22,16 @@ import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBo
 public class FileArchiveController {
 
     private final FileArchiveService fileArchiveService;
+    private final StatisticsService statisticsService;
 
-    public FileArchiveController(FileArchiveService fileArchiveService) {
+    public FileArchiveController(FileArchiveService fileArchiveService, StatisticsService statisticsService) {
         this.fileArchiveService = fileArchiveService;
+        this.statisticsService = statisticsService;
     }
 
     @PostMapping(value = {"/archive", "/archive/{type}"})
-    public ResponseEntity<StreamingResponseBody> archiveFiles(HttpServletResponse response,
+    public ResponseEntity<StreamingResponseBody> archiveFiles(HttpServletRequest request,
+                                                              HttpServletResponse response,
                                                               @RequestParam("files") MultipartFile[] files,
                                                               @PathVariable("type") Optional<String> type) throws IOException {
 
@@ -36,6 +41,8 @@ public class FileArchiveController {
         String name = "archive" + "." + fileArchiveService.getExtension(archiveMethod);
         response.setContentType("application/zip");
         response.setHeader("Content-Disposition", "filename=" + name);
+
+        statisticsService.logArchiveUsage(request.getRemoteAddr());
 
         return ResponseEntity.ok(responseBody);
     }

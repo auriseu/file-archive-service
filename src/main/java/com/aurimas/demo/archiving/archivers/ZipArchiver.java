@@ -1,4 +1,4 @@
-package com.aurimas.demo.services.archivers;
+package com.aurimas.demo.archiving.archivers;
 
 import java.io.OutputStream;
 import java.time.LocalDateTime;
