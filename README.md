@@ -25,7 +25,7 @@ Create a single REST API endpoint that allows users to upload multiple files wit
 single request, archive them and return a single zip file. Store upload statistics: IP
 address and usage count per day in the database.
 
-###Requirements
+### Requirements
 - Use Java as a server-side programming language.
 - Use a modern Java framework to complete this task. Spring or Quarkus would
 work just fine.
