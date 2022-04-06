@@ -13,6 +13,8 @@ System stores upload statistics: IP address and usage count per day in the datab
       1. spring.servlet.multipart.max-file-size
       2. spring.servlet.multipart.max-request-size
 
+## What needs to be fixed
+1. Usage count per day. Currently, system logs total usage count
+
 ## What needs to be improved
 1. Create request exception handler
-2. 
