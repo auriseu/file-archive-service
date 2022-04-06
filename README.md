@@ -18,3 +18,18 @@ System stores upload statistics: IP address and usage count per day in the datab
 
 ## What needs to be improved
 1. Create request exception handler
+
+
+## Problem description
+Create a single REST API endpoint that allows users to upload multiple files with a
+single request, archive them and return a single zip file. Store upload statistics: IP
+address and usage count per day in the database.
+
+###Requirements
+- Use Java as a server-side programming language.
+- Use a modern Java framework to complete this task. Spring or Quarkus would
+work just fine.
+- There is no need for a GUI. All interactions should be available through an API.
+- Max file upload size is 1 MB.
+- Code has to be covered by tests. We use JUnit, but you can use any other
+testing framework sufficient for this task.
