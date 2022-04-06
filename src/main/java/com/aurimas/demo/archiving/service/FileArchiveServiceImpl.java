@@ -2,8 +2,9 @@ package com.aurimas.demo.archiving.service;
 
 import java.io.OutputStream;
 import java.util.List;
+import java.util.Optional;
 
-import com.aurimas.demo.archiving.service.archivers.FileArchiver;
+import com.aurimas.demo.archiving.archivers.FileArchiver;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
@@ -18,9 +19,7 @@ public class FileArchiveServiceImpl implements FileArchiveService {
 
     @Override
     public StreamingResponseBody archiveFiles(MultipartFile[] files, String archiveMethod, OutputStream outputStream) {
-        final FileArchiver archiver = archivers.stream()
-                .filter(a -> a.canArchive(archiveMethod))
-                .findFirst()
+        final FileArchiver archiver = findArchiver(archiveMethod)
                 .orElseThrow(() -> new UnsupportedOperationException("Unsupported archive method: " + archiveMethod));
 
         return archiver.archive(files, outputStream);
@@ -28,11 +27,15 @@ public class FileArchiveServiceImpl implements FileArchiveService {
 
     @Override
     public String getExtension(String method) {
-        final FileArchiver fileArchiver = archivers.stream()
-                .filter(a -> a.canArchive(method))
-                .findFirst()
+        final FileArchiver fileArchiver = findArchiver(method)
                 .orElseThrow(() -> new UnsupportedOperationException("Unsupported archive method: " + method));
 
         return fileArchiver.getExtension(method);
+    }
+
+    private Optional<FileArchiver> findArchiver(String method) {
+        return archivers.stream()
+                .filter(a -> a.canArchive(method))
+                .findFirst();
     }
 }

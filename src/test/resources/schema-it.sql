@@ -1,0 +1,6 @@
+CREATE TABLE IF NOT EXISTS archive_usage_log
+(
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    ip VARCHAR(45) DEFAULT NULL,
+    usage_count INT
+);

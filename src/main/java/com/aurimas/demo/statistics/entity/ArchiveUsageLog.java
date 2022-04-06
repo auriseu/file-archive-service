@@ -8,7 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "archive_log")
+@Table(name = "archive_usage_log")
 public class ArchiveUsageLog {
 
     @Id
@@ -21,6 +21,14 @@ public class ArchiveUsageLog {
 
     @Column(name = "usage_count")
     private int usageCount;
+
+    public ArchiveUsageLog() {
+    }
+
+    public ArchiveUsageLog(String ip, int usageCount) {
+        this.ip = ip;
+        this.usageCount = usageCount;
+    }
 
     public int getId() {
         return id;
@@ -44,4 +52,5 @@ public class ArchiveUsageLog {
 
     public void setUsageCount(int usageCount) {
         this.usageCount = usageCount;
-   
+    }
+}

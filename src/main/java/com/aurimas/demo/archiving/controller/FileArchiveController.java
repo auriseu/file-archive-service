@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.util.Optional;
 
 import com.aurimas.demo.archiving.service.FileArchiveService;
-import com.aurimas.demo.archiving.service.archivers.ZipArchiver;
+import com.aurimas.demo.archiving.archivers.ZipArchiver;
 import com.aurimas.demo.statistics.service.StatisticsService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,7 +32,7 @@ public class FileArchiveController {
     @PostMapping(value = {"/archive", "/archive/{type}"})
     public ResponseEntity<StreamingResponseBody> archiveFiles(HttpServletRequest request,
                                                               HttpServletResponse response,
-                                                              @RequestParam("files") MultipartFile[] files,
+                                                              @RequestParam("file") MultipartFile[] files,
                                                               @PathVariable("type") Optional<String> type) throws IOException {
 
         final String archiveMethod = type.orElse(ZipArchiver.METHOD_ZIP);
